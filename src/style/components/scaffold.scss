@@ -1,0 +1,13 @@
+html {
+  font-size: 16px;
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-body text-primary m-0 p-0 antialiased;
+}
+
+img,
+svg {
+  @apply shrink-0;
+}
