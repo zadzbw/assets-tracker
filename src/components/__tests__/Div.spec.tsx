@@ -4,15 +4,16 @@ import { render } from 'vitest-browser-react'
 describe('tailwind test', () => {
   it('should render with correct style', async () => {
     const screen = render(
-      <div id="div" className="m-4 flex border-transparent">
+      <div id="test-div" className="m-4 flex">
         test
       </div>,
     )
     const div = screen.getByText(/test/i)
+    const divEl = div.element()
 
-    // expect(getComputedStyle(div).borderColor).toEqual('transparent')
-    // expect(getComputedStyle(div).display).toEqual('flex')
-    // expect(getComputedStyle(div).margin).toEqual('1rem')
+    expect(getComputedStyle(divEl).display).toEqual('flex')
+    expect(getComputedStyle(divEl).margin).toEqual('16px')
+    expect(divEl.id).toEqual('test-div')
 
     await expect.element(div).toHaveTextContent('test')
     expect(1).toEqual(1)

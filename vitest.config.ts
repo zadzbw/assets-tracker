@@ -7,15 +7,16 @@ export default defineVitestConfig(() => {
     viteConfig,
     defineVitestConfig({
       test: {
-        // setupFiles: './src/test/setup.ts',
+        setupFiles: './src/test/setup.ts',
         reporters: 'verbose',
         // globals: true,
-        // css: true,
+        css: true,
         browser: {
           enabled: true,
           // headless: true,
           provider: 'playwright',
           instances: [{ browser: 'chromium' }],
+          screenshotFailures: false,
         },
       },
     }),
