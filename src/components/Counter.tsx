@@ -8,11 +8,7 @@ export const Counter = () => {
   }, [])
 
   return (
-    <button
-      type="button"
-      className="cursor-pointer rounded-lg border border-transparent px-4 py-2 font-medium transition-[border-color] duration-200 hover:border-indigo-500"
-      onClick={handleClick}
-    >
+    <button type="button" className="btn btn-outline btn-primary" onClick={handleClick}>
       count is {count}
     </button>
   )
