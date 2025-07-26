@@ -25,6 +25,18 @@ export default tsESLint.config([
       eqeqeq: 2,
       semi: [2, 'never'],
       quotes: [2, 'single', { avoidEscape: true, allowTemplateLiterals: false }],
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'jotai/utils',
+              importNames: ['atomWithStorage', 'atomWithStorageSync'],
+              message: 'Please use atomWithStorage & atomWithStorageSync from `@/utils/jotai`',
+            },
+          ],
+        },
+      ],
     },
   },
 ])

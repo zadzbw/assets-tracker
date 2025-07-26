@@ -1,4 +1,4 @@
-import * as path from 'node:path'
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import reactSWC from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
@@ -11,7 +11,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': resolve(__dirname, './src'),
     },
   },
   plugins: [reactSWC(), tailwindcss()],
@@ -23,6 +23,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           react: ['react', 'react-dom'],
+          chart: ['echarts'],
+          jotai: ['jotai'],
         },
       },
     },

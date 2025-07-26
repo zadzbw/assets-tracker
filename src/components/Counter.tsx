@@ -8,7 +8,7 @@ export const Counter = () => {
   }, [])
 
   return (
-    <button type="button" className="btn btn-outline btn-primary" onClick={handleClick}>
+    <button type="button" onClick={handleClick}>
       count is {count}
     </button>
   )

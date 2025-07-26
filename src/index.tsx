@@ -1,7 +1,13 @@
 import { createRoot } from 'react-dom/client'
-import App from '@/App'
+import { Provider } from 'jotai'
+import { App } from '@/App'
+import { store } from '@/store.ts'
 import '@/style/index.css'
 
 const root = createRoot(document.getElementById('root') as HTMLElement)
 
-root.render(<App />)
+root.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+)
