@@ -5,6 +5,18 @@ import tailwindcss from '@tailwindcss/vite'
 
 const isDev = process.env.NODE_ENV === 'development'
 
+const getChunkName = (id: string, map: Record<string, string[]>) => {
+  if (id.includes('/node_modules/')) {
+    for (const [name, chunks] of Object.entries(map)) {
+      for (const lib of chunks) {
+        if (id.includes(`/node_modules/${lib}/`)) {
+          return name
+        }
+      }
+    }
+  }
+}
+
 export default defineConfig({
   define: {
     __DEV__: isDev,
@@ -21,10 +33,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-          chart: ['echarts'],
-          jotai: ['jotai'],
+        // for async chunks
+        manualChunks(id) {
+          return getChunkName(id, {
+            react: ['react', 'react-dom'],
+            chart: ['echarts'],
+            jotai: ['jotai'],
+          })
         },
       },
     },
