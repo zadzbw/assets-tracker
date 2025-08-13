@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import BigNumber from 'bignumber.js'
-import { omit } from 'lodash-es'
+import { omit } from 'es-toolkit'
 import type { AssetCategory, BaseAsset, RawAssetItem } from '@/types/asset.ts'
 import type { RateRecord } from '@/types/currency.ts'
 

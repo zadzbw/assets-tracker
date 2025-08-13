@@ -38,8 +38,8 @@
     "daisyui": "^5.0.46",
     "dayjs": "^1.11.13",
     "echarts": "^5.6.0",
+    "es-toolkit": "^1.39.9",
     "jotai": "^2.12.5",
-    "lodash-es": "^4.17.21",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.11"
