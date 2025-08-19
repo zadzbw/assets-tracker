@@ -14,6 +14,7 @@ const getChunkName = (id: string, map: Record<string, string[]>) => {
         }
       }
     }
+    return 'vendors'
   }
 }
 
@@ -37,8 +38,8 @@ export default defineConfig({
         manualChunks(id) {
           return getChunkName(id, {
             react: ['react', 'react-dom'],
-            chart: ['echarts'],
             jotai: ['jotai'],
+            chart: ['echarts', 'zrender'],
           })
         },
       },

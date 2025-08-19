@@ -3,7 +3,6 @@ import type { BarSeriesOption, LineSeriesOption } from 'echarts/charts'
 import type {
   TitleComponentOption,
   TooltipComponentOption,
-  LegendComponentOption,
   GridComponentOption,
   DatasetComponentOption,
 } from 'echarts/components'
@@ -13,7 +12,6 @@ export type ECOption = ComposeOption<
   | LineSeriesOption
   | TitleComponentOption
   | TooltipComponentOption
-  | LegendComponentOption
   | GridComponentOption
   | DatasetComponentOption
 >
@@ -24,13 +22,11 @@ export const createECharts = async () => {
   if (echarts) {
     return echarts
   }
-
   echarts = await import('echarts/core')
   const { BarChart, LineChart } = await import('echarts/charts')
   const {
     TitleComponent,
     TooltipComponent,
-    LegendComponent,
     GridComponent,
 
     DatasetComponent, // 数据集组件
@@ -45,7 +41,6 @@ export const createECharts = async () => {
 
     TitleComponent,
     TooltipComponent,
-    LegendComponent,
     GridComponent,
 
     DatasetComponent,
