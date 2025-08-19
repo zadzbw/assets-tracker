@@ -28,27 +28,23 @@ export const createECharts = async () => {
     TitleComponent,
     TooltipComponent,
     GridComponent,
-
     DatasetComponent, // 数据集组件
-    TransformComponent, // 内置数据转换器组件 (filter, sort)
   } = await import('echarts/components')
-  const { LabelLayout, UniversalTransition } = await import('echarts/features')
+  // const { LabelLayout, UniversalTransition } = await import('echarts/features')
   const { CanvasRenderer } = await import('echarts/renderers')
 
   echarts.use([
+    // charts
     BarChart,
     LineChart,
 
+    // chart components
     TitleComponent,
     TooltipComponent,
     GridComponent,
-
     DatasetComponent,
-    TransformComponent,
 
-    LabelLayout,
-    UniversalTransition,
-
+    // render
     CanvasRenderer,
   ])
 
