@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import BigNumber from 'bignumber.js'
 import { omit } from 'es-toolkit'
-import type { AssetCategory, BaseAsset, RawAssetItem } from '@/types/asset.ts'
+import type { AssetCategory, BaseAsset, AssetRecord } from '@/types/asset.ts'
 import type { RateRecord } from '@/types/currency.ts'
 
 const groupAndSumByCategory = (data: BaseAsset[]) => {
@@ -39,7 +39,7 @@ export const mergeAssets = ({
   rate,
   isGroup,
 }: {
-  list: RawAssetItem[]
+  list: AssetRecord[]
   rate: RateRecord
   isGroup: boolean
 }) => {

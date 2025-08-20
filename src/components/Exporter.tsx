@@ -38,6 +38,7 @@ export const Exporter = () => {
       const a = document.createElement('a')
       a.href = url
       a.download = 'assets-tracker-data.json'
+      a.style.display = 'none'
       document.body.appendChild(a)
       a.click()
       a.remove()

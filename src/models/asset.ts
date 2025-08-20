@@ -2,7 +2,7 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { rateAtom } from '@/models/rate.ts'
 import { atomWithStorageSync } from '@/utils/jotai'
 import { mergeAssets } from '@/utils/mergeAssets.ts'
-import type { RawAssetItem } from '@/types/asset.ts'
+import type { AssetRecord } from '@/types/asset.ts'
 
 const groupAssetAtom = atomWithStorageSync<'group-asset', boolean>('jotai-ls:group-asset', false)
 
@@ -10,11 +10,18 @@ export const useGroupAsset = () => useAtomValue(groupAssetAtom)
 
 export const useSetGroupAsset = () => useSetAtom(groupAssetAtom)
 
-const rawAssetAtom = atomWithStorageSync<'asset', RawAssetItem[]>('jotai-ls:asset', [])
+const rawAssetAtom = atomWithStorageSync<'asset', AssetRecord[]>('jotai-ls:asset', [])
 
 export const useRawAsset = () => useAtomValue(rawAssetAtom)
 
 export const useSetRawAsset = () => useSetAtom(rawAssetAtom)
+
+export const useAddNewAsset = () => {
+  const update = useSetAtom(rawAssetAtom)
+  return (asset: AssetRecord) => {
+    update((prev) => [...prev, asset])
+  }
+}
 
 const assetAtom = atom((get) => {
   const rawAsset = get(rawAssetAtom)

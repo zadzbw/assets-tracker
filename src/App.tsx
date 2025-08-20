@@ -1,13 +1,13 @@
 import { Tabs } from '@/components/Tabs.tsx'
 import { ChartPage } from '@/pages/ChartPage.tsx'
-import { NewRecordPage } from '@/pages/NewRecordPage.tsx'
+import { NewAssetPage } from '@/pages/NewAssetPage.tsx'
 import { DataPage } from '@/pages/DataPage.tsx'
 
 export const App = () => {
   return (
     <div className="flex flex-col">
       <Tabs
-        defaultActiveKey="add-record"
+        defaultActiveKey="new-asset"
         items={[
           {
             tabKey: 'chart',
@@ -15,9 +15,9 @@ export const App = () => {
             children: <ChartPage />,
           },
           {
-            tabKey: 'add-record',
+            tabKey: 'new-asset',
             label: '添加资产记录',
-            children: <NewRecordPage />,
+            children: <NewAssetPage />,
           },
 
           {
