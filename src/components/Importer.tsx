@@ -39,7 +39,7 @@ export const Importer = () => {
   }
 
   return (
-    <button type="button" className="btn btn-primary" onClick={handleChoose}>
+    <button type="button" className="btn btn-outline btn-primary" onClick={handleChoose}>
       导入数据
       <input
         ref={inputRef}

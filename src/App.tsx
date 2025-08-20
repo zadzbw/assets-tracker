@@ -1,7 +1,7 @@
 import { Tabs } from '@/components/Tabs.tsx'
 import { ChartPage } from '@/pages/ChartPage.tsx'
 import { NewAssetPage } from '@/pages/NewAssetPage.tsx'
-import { DataPage } from '@/pages/DataPage.tsx'
+import { DataAndSettingsPage } from '@/pages/DataAndSettingsPage.tsx'
 
 export const App = () => {
   return (
@@ -16,14 +16,14 @@ export const App = () => {
           },
           {
             tabKey: 'new-asset',
-            label: '添加资产记录',
+            label: '创建资产记录',
             children: <NewAssetPage />,
           },
 
           {
-            tabKey: 'data',
-            label: '资产数据',
-            children: <DataPage />,
+            tabKey: 'data-and-settings',
+            label: '资产数据 & 设置',
+            children: <DataAndSettingsPage />,
           },
         ]}
       />

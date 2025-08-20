@@ -50,7 +50,7 @@ export const Exporter = () => {
   }
 
   return (
-    <button type="button" className="btn btn-secondary" onClick={exportData}>
+    <button type="button" className="btn btn-outline btn-secondary" onClick={exportData}>
       导出数据
     </button>
   )

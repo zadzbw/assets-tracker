@@ -26,6 +26,17 @@ export const useAddAssetRecord = () => {
   }
 }
 
+const lastAssetRecordAtom = atom((get) => {
+  const assetRecordList = get(assetRecordListAtom)
+  const last = assetRecordList.at(-1)
+  if (last) {
+    return last.assets
+  }
+  return []
+})
+
+export const useLastAssetRecord = () => useAtomValue(lastAssetRecordAtom)
+
 const chartAssetAtom = atom((get) => {
   const assetRecordList = get(assetRecordListAtom)
 
