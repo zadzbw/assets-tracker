@@ -79,6 +79,21 @@ const TabContent: FC<TabContentType> = ({
   return isActive && content
 }
 
+// 受控组件，props.activeKey 如果变更，需要更新内部 state
+const InnerActiveKeyUpdater = ({
+  activeKey,
+  updateFn,
+}: {
+  activeKey: string
+  updateFn: (activeKey: string) => void
+}) => {
+  useEffect(() => {
+    updateFn(activeKey)
+  }, [activeKey, updateFn])
+
+  return null
+}
+
 export const Tabs: FC<TabsProps> = (props) => {
   const { items } = props
   const isControlled = 'activeKey' in props
@@ -96,15 +111,11 @@ export const Tabs: FC<TabsProps> = (props) => {
     }
   }
 
-  // 受控组件，props.activeKey 如果变更，需要更新内部 state
-  useEffect(() => {
-    if (isControlled) {
-      setActiveKey(props.activeKey)
-    }
-  }, [isControlled, isControlled && props.activeKey])
-
   return (
     <div className="tabs tabs-border">
+      {isControlled && (
+        <InnerActiveKeyUpdater activeKey={props.activeKey} updateFn={setActiveKey} />
+      )}
       {items.map(({ tabKey, label, ...rest }) => {
         const isActive = tabKey === activeKey
         return (

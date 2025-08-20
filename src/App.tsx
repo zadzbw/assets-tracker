@@ -7,7 +7,7 @@ export const App = () => {
   return (
     <div className="flex flex-col">
       <Tabs
-        defaultActiveKey="chart"
+        defaultActiveKey="add-record"
         items={[
           {
             tabKey: 'chart',
