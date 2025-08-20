@@ -14,7 +14,6 @@ const getChunkName = (id: string, map: Record<string, string[]>) => {
         }
       }
     }
-    return 'vendors'
   }
 }
 
