@@ -1,50 +1,62 @@
 import type { Currency } from '@/types/currency'
 
-export type Risk = 'high' | 'mid' | 'low'
-
 export type AssetCategory = 'crypto' | 'stock' | 'gold' | 'bond' | 'cash'
 
-// 原始数据
-interface RawAsset {
+interface CryptoAsset {
   name: string
   value: number
-  currency: Currency
-  category: AssetCategory
-  risk: Risk
-}
-
-interface CryptoAsset extends RawAsset {
   category: 'crypto'
-  risk: 'high'
   currency: 'USD'
-}
-
-interface StockAsset extends RawAsset {
-  category: 'stock'
   risk: 'high'
 }
 
-interface GoldAsset extends RawAsset {
+interface StockAsset {
+  name: string
+  value: number
+  category: 'stock'
+  currency: 'CNY'
+  risk: 'high'
+}
+
+interface GoldAsset {
+  name: string
+  value: number
   category: 'gold'
+  currency: 'CNY'
   risk: 'mid'
 }
 
-interface BondAsset extends RawAsset {
+interface BondAsset {
+  name: string
+  value: number
   category: 'bond'
+  currency: 'CNY'
   risk: 'low'
 }
 
-interface CashAsset extends RawAsset {
+interface CashAsset {
+  name: string
+  value: number
   category: 'cash'
+  currency: Currency
   risk: 'low'
 }
 
-export type RawAssetItem = {
+export type Asset = CryptoAsset | StockAsset | GoldAsset | BondAsset | CashAsset
+
+export type InputAsset =
+  | Omit<CryptoAsset, 'value'>
+  | Omit<StockAsset, 'value'>
+  | Omit<GoldAsset, 'value'>
+  | Omit<BondAsset, 'value'>
+  | Omit<CashAsset, 'value'>
+
+export type AssetRecord = {
   date: Date
-  asset: Array<CryptoAsset | StockAsset | GoldAsset | BondAsset | CashAsset>
+  assets: Array<Asset>
 }
 
 // merge 后的数据
-export type BaseAsset = Omit<RawAsset, 'currency' | 'value'> & {
+export type BaseAsset = Omit<Asset, 'currency' | 'value'> & {
   value: number[]
 }

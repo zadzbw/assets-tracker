@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import BigNumber from 'bignumber.js'
 import { omit } from 'es-toolkit'
-import type { AssetCategory, BaseAsset, RawAssetItem } from '@/types/asset.ts'
+import type { AssetCategory, BaseAsset, AssetRecord } from '@/types/asset.ts'
 import type { RateRecord } from '@/types/currency.ts'
 
 const groupAndSumByCategory = (data: BaseAsset[]) => {
@@ -39,7 +39,7 @@ export const mergeAssets = ({
   rate,
   isGroup,
 }: {
-  list: RawAssetItem[]
+  list: AssetRecord[]
   rate: RateRecord
   isGroup: boolean
 }) => {
@@ -47,14 +47,14 @@ export const mergeAssets = ({
   const dates = list.map((item) => dayjs(item.date).format('YYYY-MM-DD'))
 
   // 收集所有唯一的资产名称
-  const assetNames = [...new Set(list.flatMap((item) => item.asset.map((asset) => asset.name)))]
+  const assetNames = [...new Set(list.flatMap((item) => item.assets.map((asset) => asset.name)))]
 
   // 为每个资产创建合并后的对象
   let mergedAssets: BaseAsset[] = assetNames.map((assetName) => {
     // 找到第一个包含该资产的项目作为模板
     const template = list
       .flatMap((item) => {
-        return item.asset
+        return item.assets
       })
       .find((asset) => {
         return asset.name === assetName
@@ -62,7 +62,7 @@ export const mergeAssets = ({
 
     // 收集每个日期该资产的 value
     const values = list.map((item) => {
-      const asset = item.asset.find((asset) => {
+      const asset = item.assets.find((asset) => {
         return asset.name === assetName
       })
       return asset ? +BigNumber(asset.value).multipliedBy(rate[asset.currency]).toFixed(2) : 0 // 如果某个日期没有该资产，默认为 0

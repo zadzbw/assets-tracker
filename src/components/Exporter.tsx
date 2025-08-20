@@ -1,4 +1,4 @@
-import { useRawAsset } from '@/models/asset.ts'
+import { useAssetRecordList } from '@/models/asset.ts'
 import { useRawRate } from '@/models/rate.ts'
 import type { GlobalData } from '@/types/common.ts'
 
@@ -22,13 +22,13 @@ const safeStringify = (value: unknown): string => {
 }
 
 export const Exporter = () => {
-  const rawRateData = useRawRate()
-  const rawAssetData = useRawAsset()
+  const rate = useRawRate()
+  const assetRecordList = useAssetRecordList()
 
   const exportData = () => {
     const data: GlobalData = {
-      rate: rawRateData,
-      asset: rawAssetData,
+      rateData: rate,
+      assetData: assetRecordList,
     }
     try {
       const json = safeStringify(data)
@@ -38,6 +38,7 @@ export const Exporter = () => {
       const a = document.createElement('a')
       a.href = url
       a.download = 'assets-tracker-data.json'
+      a.style.display = 'none'
       document.body.appendChild(a)
       a.click()
       a.remove()
@@ -49,7 +50,7 @@ export const Exporter = () => {
   }
 
   return (
-    <button type="button" className="btn btn-secondary" onClick={exportData}>
+    <button type="button" className="btn btn-outline btn-secondary" onClick={exportData}>
       导出数据
     </button>
   )
