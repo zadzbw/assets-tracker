@@ -1,4 +1,4 @@
-import { useRawAsset } from '@/models/asset.ts'
+import { useAssetRecordList } from '@/models/asset.ts'
 import { useRawRate } from '@/models/rate.ts'
 import type { GlobalData } from '@/types/common.ts'
 
@@ -22,13 +22,13 @@ const safeStringify = (value: unknown): string => {
 }
 
 export const Exporter = () => {
-  const rawRateData = useRawRate()
-  const rawAssetData = useRawAsset()
+  const rate = useRawRate()
+  const assetRecordList = useAssetRecordList()
 
   const exportData = () => {
     const data: GlobalData = {
-      rate: rawRateData,
-      asset: rawAssetData,
+      rateData: rate,
+      assetData: assetRecordList,
     }
     try {
       const json = safeStringify(data)

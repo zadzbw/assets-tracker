@@ -53,7 +53,7 @@ export type InputAsset =
 
 export type AssetRecord = {
   date: Date
-  asset: Array<Asset>
+  assets: Array<Asset>
 }
 
 // merge 后的数据

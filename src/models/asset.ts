@@ -10,26 +10,29 @@ export const useGroupAsset = () => useAtomValue(groupAssetAtom)
 
 export const useSetGroupAsset = () => useSetAtom(groupAssetAtom)
 
-const rawAssetAtom = atomWithStorageSync<'asset', AssetRecord[]>('jotai-ls:asset', [])
+const assetRecordListAtom = atomWithStorageSync<'asset-record-list', AssetRecord[]>(
+  'jotai-ls:asset-record-list',
+  [],
+)
 
-export const useRawAsset = () => useAtomValue(rawAssetAtom)
+export const useAssetRecordList = () => useAtomValue(assetRecordListAtom)
 
-export const useSetRawAsset = () => useSetAtom(rawAssetAtom)
+export const useSetAssetRecordList = () => useSetAtom(assetRecordListAtom)
 
-export const useAddNewAsset = () => {
-  const update = useSetAtom(rawAssetAtom)
+export const useAddAssetRecord = () => {
+  const update = useSetAtom(assetRecordListAtom)
   return (asset: AssetRecord) => {
     update((prev) => [...prev, asset])
   }
 }
 
-const assetAtom = atom((get) => {
-  const rawAsset = get(rawAssetAtom)
+const chartAssetAtom = atom((get) => {
+  const assetRecordList = get(assetRecordListAtom)
 
   const rate = get(rateAtom)
   const groupByAsset = get(groupAssetAtom)
 
-  return mergeAssets({ list: rawAsset, rate, isGroup: groupByAsset })
+  return mergeAssets({ list: assetRecordList, rate, isGroup: groupByAsset })
 })
 
-export const useAsset = () => useAtomValue(assetAtom)
+export const useChartAsset = () => useAtomValue(chartAssetAtom)

@@ -1,9 +1,9 @@
-import { useAsset } from '@/models/asset.ts'
+import { useChartAsset } from '@/models/asset.ts'
 import { type ECOption } from '@/utils/createECharts.ts'
 import { ChartCore } from './ChartCore.tsx'
 
 export const BasicChart = () => {
-  const { date, total, asset } = useAsset()
+  const { date, total, asset } = useChartAsset()
 
   const options: ECOption = {
     xAxis: {

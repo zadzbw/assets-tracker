@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { INPUT_ASSET_MAP } from '@/constants/asset.ts'
-import { useAddNewAsset } from '@/models/asset.ts'
+import { useAddAssetRecord } from '@/models/asset.ts'
 import type { AssetRecord } from '@/types/asset.ts'
 
 type NewAssetValue = {
@@ -13,22 +13,23 @@ export const NewAssetPage = () => {
     mode: 'all',
   })
 
-  const addNewAsset = useAddNewAsset()
+  const addAssetRecord = useAddAssetRecord()
 
   const onSubmit: SubmitHandler<NewAssetValue> = (data) => {
-    const newAsset: AssetRecord = {
+    const assetRecord: AssetRecord = {
       date: new Date(),
       asset: [],
     }
 
     for (const newAssetKey in data) {
-      newAsset.asset.push({
+      assetRecord.asset.push({
         ...INPUT_ASSET_MAP[newAssetKey as keyof typeof INPUT_ASSET_MAP],
         value: data[newAssetKey as keyof typeof INPUT_ASSET_MAP],
       })
     }
 
-    addNewAsset(newAsset)
+    addAssetRecord(assetRecord)
+    alert('添加成功')
     reset()
   }
 
