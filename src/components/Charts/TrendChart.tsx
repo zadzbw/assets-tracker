@@ -14,6 +14,11 @@ export const TrendChart = () => {
   const options = useMemo<ECOption>(
     () => ({
       color: COLORS,
+      title: {
+        text: '趋势变化',
+        left: 'center',
+        textStyle: { fontSize: 14, fontWeight: 500 },
+      },
       tooltip: {
         trigger: 'axis',
       },
@@ -24,10 +29,10 @@ export const TrendChart = () => {
         textStyle: { fontSize: 12 },
       },
       grid: {
-        left: 60,
-        right: 24,
-        top: 24,
-        bottom: 56,
+        left: 48,
+        right: 12,
+        top: 36,
+        bottom: 36,
         containLabel: false,
       },
       xAxis: {
@@ -35,11 +40,11 @@ export const TrendChart = () => {
         data: date,
         boundaryGap: false,
         axisTick: { alignWithLabel: true },
-        axisLabel: { fontSize: 12 },
+        axisLabel: { fontSize: 10 },
       },
       yAxis: {
         type: 'value',
-        axisLabel: { fontSize: 12 },
+        axisLabel: { fontSize: 10 },
         splitLine: { lineStyle: { type: 'dashed', opacity: 0.4 } },
       },
       series: [

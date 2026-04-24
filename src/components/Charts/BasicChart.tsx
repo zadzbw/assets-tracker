@@ -14,6 +14,11 @@ export const BasicChart = () => {
   const options = useMemo<ECOption>(
     () => ({
       color: COLORS,
+      title: {
+        text: '资产绝对值',
+        left: 'center',
+        textStyle: { fontSize: 14, fontWeight: 500 },
+      },
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
@@ -22,7 +27,6 @@ export const BasicChart = () => {
           const items = params as Array<{
             seriesName: string
             value: number
-            color: string
             marker: string
           }>
           const dateLabel = items[0]?.axisValue ?? ''
@@ -50,8 +54,8 @@ export const BasicChart = () => {
       grid: {
         left: 60,
         right: 24,
-        top: 24,
-        bottom: 56,
+        top: 36,
+        bottom: 36,
         containLabel: false,
       },
       xAxis: {

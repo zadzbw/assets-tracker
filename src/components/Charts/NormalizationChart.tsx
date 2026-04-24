@@ -14,6 +14,11 @@ export const NormalizationChart = () => {
   const options = useMemo<ECOption>(
     () => ({
       color: COLORS,
+      title: {
+        text: '资产占比',
+        left: 'center',
+        textStyle: { fontSize: 14, fontWeight: 500 },
+      },
       dataset: {
         source: [
           ['date', ...date],
@@ -26,8 +31,31 @@ export const NormalizationChart = () => {
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
-        valueFormatter: (value) =>
-          `${(Math.round((value as number) * 10000) / 100).toFixed(1)}%`,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        formatter: (params: any) => {
+          const items = params as Array<{
+            seriesName: string
+            data: number[]
+            seriesIndex: number
+            marker: string
+            axisValue: string
+          }>
+          const dateLabel = items[0]?.axisValue ?? ''
+          const dateIndex = date.indexOf(dateLabel)
+          let html = `<div style="font-weight:600;margin-bottom:6px">${dateLabel}</div>`
+          for (const item of items) {
+            const ratio = item.data[item.seriesIndex + 1]
+            if (ratio === 0) continue
+            const pct = (Math.round(ratio * 10000) / 100).toFixed(1)
+            const absVal = dateIndex >= 0 ? asset[item.seriesIndex]?.value[dateIndex] : undefined
+            const absStr = absVal !== undefined ? ` (${absVal.toLocaleString()})` : ''
+            html += '<div style="display:flex;justify-content:space-between;gap:12px">'
+            html += `<span>${item.marker} ${item.seriesName}</span>`
+            html += `<span style="font-weight:600">${pct}%${absStr}</span>`
+            html += '</div>'
+          }
+          return html
+        },
       },
       legend: {
         type: 'scroll',
@@ -36,21 +64,21 @@ export const NormalizationChart = () => {
         textStyle: { fontSize: 12 },
       },
       grid: {
-        left: 60,
-        right: 24,
-        top: 24,
-        bottom: 56,
+        left: 48,
+        right: 12,
+        top: 36,
+        bottom: 36,
         containLabel: false,
       },
       xAxis: {
         type: 'category',
         axisTick: { alignWithLabel: true },
-        axisLabel: { fontSize: 12 },
+        axisLabel: { fontSize: 10 },
       },
       yAxis: {
         type: 'value',
         axisLabel: {
-          fontSize: 12,
+          fontSize: 10,
           formatter: (value: number) => `${Math.round(value * 100)}%`,
         },
         max: 1,

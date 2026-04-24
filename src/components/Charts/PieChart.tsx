@@ -20,7 +20,7 @@ export const PieChart = ({ data, title, isDonut = true }: PieChartProps) => {
       title: {
         text: title,
         left: 'center',
-        textStyle: { fontSize: 15, fontWeight: 500 },
+        textStyle: { fontSize: 14, fontWeight: 500 },
       },
       tooltip: {
         trigger: 'item',
@@ -52,7 +52,7 @@ export const PieChart = ({ data, title, isDonut = true }: PieChartProps) => {
             show: true,
             position: 'inside',
             formatter: '{b}: {c}\n({d}%)',
-            fontSize: 13,
+            fontSize: 12,
             fontWeight: 500,
             color: '#fff',
             textBorderColor: 'rgba(0,0,0,0.6)',
