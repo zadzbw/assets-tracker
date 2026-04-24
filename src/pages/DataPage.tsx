@@ -27,7 +27,7 @@ const DataView = () => {
   )
 }
 
-export const DataAndSettingsPage = () => {
+export const DataPage = () => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center gap-x-4">

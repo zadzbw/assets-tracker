@@ -16,7 +16,7 @@ const CATEGORY_LABELS: Record<AssetCategory, string> = {
 
 type FormValues = Record<string, number>
 
-export const NewAssetPage = () => {
+export const EntryPage = () => {
   const lastRecord = useLastRecord()
   const addAssetRecord = useAddAssetRecord()
   const definitions = useAssetDefinitions()
@@ -24,7 +24,6 @@ export const NewAssetPage = () => {
   const [date, setDate] = useState(dayjs().format('YYYY-MM-DD'))
   const [usdRate, setUsdRate] = useState<number>(lastRecord?.rate.USD ?? 7.15)
 
-  // 按类别分组资产名称
   const groupedAssets = CATEGORY_ORDER.map((category) => ({
     category,
     label: CATEGORY_LABELS[category],
@@ -58,64 +57,68 @@ export const NewAssetPage = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
-        <div className="flex flex-wrap gap-4">
-          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-            <legend className="fieldset-legend">记录日期</legend>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <label className="flex flex-col gap-1">
+            <span className="text-base-content/60 text-sm">记录日期</span>
             <input
               type="date"
-              className="input"
+              className="input input-bordered"
               value={date}
               onChange={(e) => setDate(e.target.value)}
             />
-          </fieldset>
-
-          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-            <legend className="fieldset-legend">USD 汇率</legend>
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-base-content/60 text-sm">USD 汇率</span>
             <input
               type="number"
               step="0.0001"
-              className="input"
+              className="input input-bordered"
               value={usdRate}
               required
               onChange={(e) => setUsdRate(+e.target.value)}
             />
-          </fieldset>
+          </label>
         </div>
 
-        {groupedAssets.map(({ category, label, keys }) => (
-          <fieldset
-            key={category}
-            className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4"
-          >
-            <legend className="fieldset-legend">{label}</legend>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+          {groupedAssets.map(({ category, label, keys }) => (
+            <fieldset
+              key={category}
+              className="fieldset bg-base-200 border-base-300 rounded-box border p-3"
+            >
+              <legend className="fieldset-legend text-sm font-medium">{label}</legend>
+              {keys.map((key) => {
+                const def = definitions[key]
+                const displayName = def.category === 'cash' ? `${key}` : key
+                return (
+                  <Fragment key={key}>
+                    <div className="text-base-content/60 mt-1 text-xs">
+                      {displayName}
+                      <span className="text-base-content/40 ml-1">({def.currency})</span>
+                    </div>
+                    <input
+                      type="number"
+                      step="0.001"
+                      className="input input-bordered input-sm w-full"
+                      required
+                      {...register(key, {
+                        required: true,
+                        valueAsNumber: true,
+                      })}
+                    />
+                  </Fragment>
+                )
+              })}
+            </fieldset>
+          ))}
+        </div>
 
-            {keys.map((key) => {
-              const def = definitions[key]
-              return (
-                <Fragment key={key}>
-                  <div className="label">
-                    {def.category === 'cash' ? '现金' : key} - ({def.currency})
-                  </div>
-                  <input
-                    type="number"
-                    step="0.001"
-                    className="input validator"
-                    required
-                    {...register(key, {
-                      required: true,
-                      valueAsNumber: true,
-                    })}
-                  />
-                </Fragment>
-              )
-            })}
-          </fieldset>
-        ))}
-
-        <button type="submit" className="btn btn-outline btn-primary w-xs">
-          确认
-        </button>
+        <div className="mt-4">
+          <button type="submit" className="btn btn-primary">
+            提交记录
+          </button>
+        </div>
       </form>
 
       {toast && (

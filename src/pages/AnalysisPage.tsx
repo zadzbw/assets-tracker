@@ -1,8 +1,7 @@
 import { ComboChart } from '@/components/Charts/ComboChart.tsx'
-import { AllocationAreaChart } from '@/components/Charts/AllocationAreaChart.tsx'
 import { useGroupAsset, useSetGroupAsset, useAssetRecordList } from '@/models/asset.ts'
 
-export const ChartPage = () => {
+export const AnalysisPage = () => {
   const groupAsset = useGroupAsset()
   const setGroupAsset = useSetGroupAsset()
   const records = useAssetRecordList()
@@ -30,12 +29,8 @@ export const ChartPage = () => {
         </label>
       </div>
 
-      <div className="min-h-0 flex-[3]">
+      <div className="min-h-0 flex-1">
         <ComboChart />
-      </div>
-
-      <div className="min-h-0 flex-[2]">
-        <AllocationAreaChart />
       </div>
     </div>
   )
