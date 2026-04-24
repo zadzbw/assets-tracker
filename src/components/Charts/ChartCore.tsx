@@ -1,4 +1,4 @@
-import { memo, useEffect, useId } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import { createECharts, type ECOption } from '@/utils/createECharts.ts'
 
 type ChartCoreProps = {
@@ -6,27 +6,55 @@ type ChartCoreProps = {
 }
 
 export const ChartCore = memo(({ options }: ChartCoreProps) => {
-  const id = useId()
-  const elementId = `chart-${id}`
+  const containerRef = useRef<HTMLDivElement>(null)
+  const instanceRef = useRef<ReturnType<typeof import('echarts/core').init> | null>(null)
 
   useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    let disposed = false
+
     const init = async () => {
       const echarts = await createECharts()
-      const el = document.getElementById(elementId)!
-      let chartInstance = echarts.getInstanceByDom(el)
+      if (disposed) return
 
+      let chartInstance = echarts.getInstanceByDom(el)
       if (!chartInstance) {
-        // 如果不存在，创建新实例
         chartInstance = echarts.init(el)
       }
 
+      instanceRef.current = chartInstance
       chartInstance.setOption<ECOption>(options, true)
     }
 
     init()
-  }, [elementId, options])
 
-  return <div id={elementId} className="h-full w-full" />
+    return () => {
+      disposed = true
+    }
+  }, [options])
+
+  // ResizeObserver + dispose cleanup
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const observer = new ResizeObserver(() => {
+      instanceRef.current?.resize()
+    })
+    observer.observe(el)
+
+    return () => {
+      observer.disconnect()
+      if (instanceRef.current) {
+        instanceRef.current.dispose()
+        instanceRef.current = null
+      }
+    }
+  }, [])
+
+  return <div ref={containerRef} className="h-full w-full" />
 })
 
 ChartCore.displayName = 'ChartCore'
