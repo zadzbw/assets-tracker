@@ -1,67 +1,85 @@
+import { useMemo } from 'react'
 import { useChartAsset } from '@/models/asset.ts'
 import { type ECOption } from '@/utils/createECharts.ts'
 import { ChartCore } from './ChartCore.tsx'
 
-export const BasicChart = () => {
-  const { date, total, asset } = useChartAsset()
+const COLORS = [
+  '#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de',
+  '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc',
+]
 
-  const options: ECOption = {
-    xAxis: {
-      type: 'category',
-      data: date,
-    },
-    yAxis: [
-      {
-        type: 'value',
-        name: 'Total',
-        alignTicks: true,
-        axisLine: {
-          show: true,
+export const BasicChart = () => {
+  const { date, asset } = useChartAsset()
+
+  const options = useMemo<ECOption>(
+    () => ({
+      color: COLORS,
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        formatter: (params: any) => {
+          const items = params as Array<{
+            seriesName: string
+            value: number
+            color: string
+            marker: string
+          }>
+          const dateLabel = items[0]?.axisValue ?? ''
+          let html = `<div style="font-weight:600;margin-bottom:6px">${dateLabel}</div>`
+          let sum = 0
+          for (const item of items) {
+            if (item.value === 0) continue
+            sum += item.value
+            html += '<div style="display:flex;justify-content:space-between;gap:16px">'
+            html += `<span>${item.marker} ${item.seriesName}</span>`
+            html += `<span style="font-weight:600">${item.value.toLocaleString()}</span>`
+            html += '</div>'
+          }
+          html += '<div style="border-top:1px solid #ccc;margin-top:4px;padding-top:4px;display:flex;justify-content:space-between;gap:16px">'
+          html += `<span>Total</span><span style="font-weight:600">${sum.toLocaleString()}</span></div>`
+          return html
         },
       },
-    ],
-    tooltip: {
-      trigger: 'item',
-      axisPointer: {
-        type: 'shadow',
+      legend: {
+        type: 'scroll',
+        bottom: 0,
+        itemGap: 16,
+        textStyle: { fontSize: 12 },
       },
-    },
-    series: [
-      ...asset.map((item) => {
-        return {
+      grid: {
+        left: 60,
+        right: 24,
+        top: 24,
+        bottom: 56,
+        containLabel: false,
+      },
+      xAxis: {
+        type: 'category',
+        data: date,
+        axisTick: { alignWithLabel: true },
+        axisLabel: { fontSize: 12 },
+      },
+      yAxis: {
+        type: 'value',
+        axisLabel: { fontSize: 12 },
+        splitLine: { lineStyle: { type: 'dashed', opacity: 0.4 } },
+      },
+      series: [
+        ...asset.map((item, i) => ({
           type: 'bar' as const,
           name: item.name,
           data: item.value,
-          emphasis: {
-            focus: 'series' as const,
-          },
-          label: {
-            show: true,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            formatter: (params: any) => {
-              const data = params.data as number
-              if (data === 0) {
-                return ''
-              }
-              return `${params.seriesName} - ${data}`
-            },
-          },
-          stack: 'Total',
-        }
-      }),
-      {
-        type: 'bar',
-        name: 'Total',
-        data: total,
-        barWidth: 16,
-        label: {
-          show: true,
-          position: 'top',
-          formatter: 'Total: {c}',
-        },
-      },
-    ],
-  }
+          stack: 'total',
+          barMaxWidth: 48,
+          itemStyle: { borderRadius: i === asset.length - 1 ? [2, 2, 0, 0] : 0 },
+          emphasis: { focus: 'series' as const },
+          label: { show: false },
+        })),
+      ],
+    }),
+    [date, asset],
+  )
 
   return <ChartCore options={options} />
 }

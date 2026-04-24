@@ -1,13 +1,12 @@
 import { useRef } from 'react'
-import { useSetRate } from '@/models/rate.ts'
-import { useSetAssetRecordList } from '@/models/asset.ts'
+import { useSetAssetDefinitions, useSetAssetRecordList } from '@/models/asset.ts'
 import type { GlobalData } from '@/types/common.ts'
 
 export const Importer = () => {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const setRate = useSetRate()
-  const setAssetRecordList = useSetAssetRecordList()
+  const setDefinitions = useSetAssetDefinitions()
+  const setRecordList = useSetAssetRecordList()
 
   const handleChoose = () => {
     inputRef.current?.click()
@@ -18,10 +17,10 @@ export const Importer = () => {
     reader.onload = () => {
       try {
         const text = String(reader.result ?? '')
-        const { rateData, assetData }: GlobalData = JSON.parse(text)
+        const { assets, records }: GlobalData = JSON.parse(text)
         // TODO: data type check
-        setRate(rateData.USD)
-        setAssetRecordList(assetData)
+        setDefinitions(assets)
+        setRecordList(records)
       } catch (e) {
         console.log('数据导入失败', e)
       }

@@ -1,49 +1,56 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import { rateAtom } from '@/models/rate.ts'
 import { atomWithStorageSync } from '@/utils/jotai'
 import { mergeAssets } from '@/utils/mergeAssets.ts'
-import type { AssetRecord } from '@/types/asset.ts'
+import { DEFAULT_ASSET_DEFINITIONS } from '@/constants/asset.ts'
+import type { AssetDefinitionMap, AssetRecord } from '@/types/asset.ts'
 
+// 资产定义表
+export const assetDefinitionsAtom = atomWithStorageSync<'asset-definitions', AssetDefinitionMap>(
+  'jotai-ls:asset-definitions',
+  DEFAULT_ASSET_DEFINITIONS,
+)
+
+export const useAssetDefinitions = () => useAtomValue(assetDefinitionsAtom)
+export const useSetAssetDefinitions = () => useSetAtom(assetDefinitionsAtom)
+
+// 图表聚合开关
 const groupAssetAtom = atomWithStorageSync<'group-asset', boolean>('jotai-ls:group-asset', false)
 
 export const useGroupAsset = () => useAtomValue(groupAssetAtom)
-
 export const useSetGroupAsset = () => useSetAtom(groupAssetAtom)
 
-const assetRecordListAtom = atomWithStorageSync<'asset-record-list', AssetRecord[]>(
+// 资产记录列表
+export const assetRecordListAtom = atomWithStorageSync<'asset-record-list', AssetRecord[]>(
   'jotai-ls:asset-record-list',
   [],
 )
 
 export const useAssetRecordList = () => useAtomValue(assetRecordListAtom)
-
 export const useSetAssetRecordList = () => useSetAtom(assetRecordListAtom)
 
 export const useAddAssetRecord = () => {
   const update = useSetAtom(assetRecordListAtom)
-  return (asset: AssetRecord) => {
-    update((prev) => [...prev, asset])
+  return (record: AssetRecord) => {
+    update((prev) => [...prev, record])
   }
 }
 
-const lastAssetRecordAtom = atom((get) => {
-  const assetRecordList = get(assetRecordListAtom)
-  const last = assetRecordList.at(-1)
-  if (last) {
-    return last.assets
-  }
-  return []
+// 最后一条记录的 values（用于表单预填）
+const lastRecordAtom = atom((get) => {
+  const list = get(assetRecordListAtom)
+  const last = list.at(-1)
+  return last ?? null
 })
 
-export const useLastAssetRecord = () => useAtomValue(lastAssetRecordAtom)
+export const useLastRecord = () => useAtomValue(lastRecordAtom)
 
+// 图表数据
 const chartAssetAtom = atom((get) => {
-  const assetRecordList = get(assetRecordListAtom)
+  const list = get(assetRecordListAtom)
+  const definitions = get(assetDefinitionsAtom)
+  const isGroup = get(groupAssetAtom)
 
-  const rate = get(rateAtom)
-  const groupByAsset = get(groupAssetAtom)
-
-  return mergeAssets({ list: assetRecordList, rate, isGroup: groupByAsset })
+  return mergeAssets({ list, definitions, isGroup })
 })
 
 export const useChartAsset = () => useAtomValue(chartAssetAtom)

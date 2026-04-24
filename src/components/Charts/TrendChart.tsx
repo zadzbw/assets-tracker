@@ -8,26 +8,14 @@ const COLORS = [
   '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc',
 ]
 
-export const NormalizationChart = () => {
+export const TrendChart = () => {
   const { date, total, asset } = useChartAsset()
 
   const options = useMemo<ECOption>(
     () => ({
       color: COLORS,
-      dataset: {
-        source: [
-          ['date', ...date],
-          ...asset.map((item) => [
-            item.name,
-            ...item.value.map((value, index) => value / total[index]),
-          ]),
-        ],
-      },
       tooltip: {
         trigger: 'axis',
-        axisPointer: { type: 'shadow' },
-        valueFormatter: (value) =>
-          `${(Math.round((value as number) * 10000) / 100).toFixed(1)}%`,
       },
       legend: {
         type: 'scroll',
@@ -44,27 +32,35 @@ export const NormalizationChart = () => {
       },
       xAxis: {
         type: 'category',
+        data: date,
+        boundaryGap: false,
         axisTick: { alignWithLabel: true },
         axisLabel: { fontSize: 12 },
       },
       yAxis: {
         type: 'value',
-        axisLabel: {
-          fontSize: 12,
-          formatter: (value: number) => `${Math.round(value * 100)}%`,
-        },
-        max: 1,
+        axisLabel: { fontSize: 12 },
         splitLine: { lineStyle: { type: 'dashed', opacity: 0.4 } },
       },
-      series: asset.map((_, i) => ({
-        type: 'bar' as const,
-        seriesLayoutBy: 'row' as const,
-        stack: 'total',
-        barMaxWidth: 48,
-        itemStyle: { borderRadius: i === asset.length - 1 ? [2, 2, 0, 0] : 0 },
-        emphasis: { focus: 'series' as const },
-        label: { show: false },
-      })),
+      series: [
+        ...asset.map((item) => ({
+          type: 'line' as const,
+          name: item.name,
+          data: item.value,
+          smooth: true,
+          symbolSize: 6,
+          lineStyle: { width: 2 },
+        })),
+        {
+          type: 'line' as const,
+          name: '总计',
+          data: total,
+          smooth: true,
+          symbolSize: 8,
+          lineStyle: { width: 3, type: 'dashed' as const },
+          areaStyle: { opacity: 0.05 },
+        },
+      ],
     }),
     [date, total, asset],
   )

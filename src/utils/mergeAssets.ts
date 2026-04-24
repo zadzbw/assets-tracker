@@ -1,8 +1,31 @@
 import dayjs from 'dayjs'
 import BigNumber from 'bignumber.js'
-import { omit } from 'es-toolkit'
-import type { AssetCategory, BaseAsset, AssetRecord } from '@/types/asset.ts'
-import type { RateRecord } from '@/types/currency.ts'
+import type { AssetCategory, AssetDefinitionMap, BaseAsset, AssetRecord } from '@/types/asset.ts'
+import { buildRateRecord } from '@/models/rate.ts'
+
+export const groupByKey = <T>(items: T[], keyFn: (item: T) => string): Map<string, T[]> => {
+  const map = new Map<string, T[]>()
+  for (const item of items) {
+    const key = keyFn(item)
+    const group = map.get(key)
+    if (group) {
+      group.push(item)
+    } else {
+      map.set(key, [item])
+    }
+  }
+  return map
+}
+
+// 将单个资产原币值转为 CNY
+export const valueToCNY = (
+  value: number,
+  currency: string,
+  usdRate: number,
+): number => {
+  const rate = buildRateRecord(usdRate)
+  return +BigNumber(value).multipliedBy(rate[currency as keyof typeof rate] ?? 1).toFixed(2)
+}
 
 const groupAndSumByCategory = (data: BaseAsset[]) => {
   const map = new Map<AssetCategory, BaseAsset>()
@@ -12,7 +35,7 @@ const groupAndSumByCategory = (data: BaseAsset[]) => {
 
     if (!map.has(category)) {
       map.set(category, {
-        category: category,
+        category,
         name: category === 'stock' ? '股票' : category === 'cash' ? '现金' : item.name,
         value: [],
         risk,
@@ -29,50 +52,44 @@ const groupAndSumByCategory = (data: BaseAsset[]) => {
     }
   }
 
-  return Array.from(map, ([, value]) => {
-    return value
-  })
+  return Array.from(map, ([, value]) => value)
 }
 
 export const mergeAssets = ({
   list,
-  rate,
+  definitions,
   isGroup,
 }: {
   list: AssetRecord[]
-  rate: RateRecord
+  definitions: AssetDefinitionMap
   isGroup: boolean
 }) => {
   // 提取所有日期
   const dates = list.map((item) => dayjs(item.date).format('YYYY-MM-DD'))
 
   // 收集所有唯一的资产名称
-  const assetNames = [...new Set(list.flatMap((item) => item.assets.map((asset) => asset.name)))]
+  const assetNames = [...new Set(list.flatMap((item) => Object.keys(item.values)))]
 
   // 为每个资产创建合并后的对象
-  let mergedAssets: BaseAsset[] = assetNames.map((assetName) => {
-    // 找到第一个包含该资产的项目作为模板
-    const template = list
-      .flatMap((item) => {
-        return item.assets
-      })
-      .find((asset) => {
-        return asset.name === assetName
-      })!
+  let mergedAssets: BaseAsset[] = assetNames
+    .filter((name) => definitions[name]) // 只处理有定义的资产
+    .map((assetName) => {
+      const def = definitions[assetName]
 
-    // 收集每个日期该资产的 value
-    const values = list.map((item) => {
-      const asset = item.assets.find((asset) => {
-        return asset.name === assetName
+      // 收集每个日期该资产的 value（转 CNY）
+      const values = list.map((record) => {
+        const rawValue = record.values[assetName]
+        if (rawValue === undefined || rawValue === null) return 0
+        return valueToCNY(rawValue, def.currency, record.rate.USD)
       })
-      return asset ? +BigNumber(asset.value).multipliedBy(rate[asset.currency]).toFixed(2) : 0 // 如果某个日期没有该资产，默认为 0
+
+      return {
+        name: assetName,
+        category: def.category,
+        risk: def.risk,
+        value: values,
+      }
     })
-
-    return {
-      ...omit(template, ['currency']),
-      value: values,
-    }
-  })
 
   if (isGroup) {
     mergedAssets = groupAndSumByCategory(mergedAssets)
